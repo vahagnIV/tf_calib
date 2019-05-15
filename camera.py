@@ -5,6 +5,7 @@ from distrotion import IDistortion
 from scipy.optimize import newton_krylov
 from scipy.optimize.nonlin import NoConvergence
 
+
 class Camera:
     def __init__(self, distortion: IDistortion = IDistortion()):
         CAMERA_PARAMETER_NORMALIZATION_CONSTANT = 1000
@@ -151,6 +152,7 @@ class Camera:
             mr = mr[:, 0, :]
 
             return np.array([mr[0, 1] - mr[1, 0], mr[0, 2] - mr[2, 0], mr[2, 1] - mr[1, 2]])
+
         try:
             sol = newton_krylov(loss_function, guess, method='lgmres', verbose=0)
         except NoConvergence:
@@ -160,33 +162,12 @@ class Camera:
     def get_intrinsic_matrix(self, session: tf.Session):
         return session.run([self.K])[0]
 
-
     def train(self, xi: np.ndarray, c: np.ndarray, session: tf.Session):
         angles = self.find_best_rotation_parameters(xi, c, session)
         if angles is None:
             return None
-        # print(angles)
 
-        b = session.run(self.optimizers + [self.x, self.RcpT, self.loss],
-                              feed_dict={self.xi_input: xi, self.c: c, self.angles: angles})
+        b = session.run(self.optimizers + [self.loss],
+                        feed_dict={self.xi_input: xi, self.c: c, self.angles: angles})
 
-        # rcpt = b[-2]
-        # x = b[-3]
-        #
-        # import matplotlib.pyplot as plt
-        # from mpl_toolkits.mplot3d import Axes3D
-
-        # fig = plt.figure()
-        # ax = Axes3D(fig)
-        # ax.invert_yaxis()
-        # ax.invert_zaxis()
-        # ax.set_xlabel('$X$', fontsize=20, rotation=150)
-        # ax.set_ylabel('$Y$')
-        # ax.set_zlabel('$Z$')
-        # ax.scatter(xs=rcpt[0, 0, :], zs=rcpt[2, 0, :], ys=rcpt[1, 0, :], zdir='z', s=20, c=None, depthshade=True)
-        # ax.scatter(xs=rcpt[0, 0, 0:1], zs=rcpt[2, 0, 0:1], ys=rcpt[1, 0, 0:1], zdir='z', s=20, c=None, depthshade=True)
-        # ax.scatter(xs=x[0, :, 0], zs=x[2, :, 0], ys=x[1, :, 0], zdir='z', s=20, c=None, depthshade=True)
-        # fig.show()
         return b[-1]
-
-        pass
