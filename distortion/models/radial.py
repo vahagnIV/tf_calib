@@ -1,5 +1,5 @@
 import tensorflow as tf
-from distrotion import IDistortion
+from distortion import IDistortion
 
 
 class Radial(IDistortion):

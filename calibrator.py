@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 from camera import Camera
-from distrotion import Radial
+from distortion import Radial
 
 
 class Calibrator:

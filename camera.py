@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 from utils import create_rotation_matrix
-from distrotion import IDistortion
+from distortion import IDistortion
 from scipy.optimize import newton_krylov
 from scipy.optimize.nonlin import NoConvergence
 
