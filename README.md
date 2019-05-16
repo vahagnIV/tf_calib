@@ -14,7 +14,7 @@ After 10 epochs we reach precision < 10<sup>-2</sup> size of the quare (~7cm)
 ## Theory
 
 ### Pinhole camera
-Our goal is to find the camera matrix K together with distortion coefficient, the so-called intrinsic parameters of the camera.
+Our goal is to find the camera matrix K together with distortion coefficients, the so-called intrinsic parameters of the camera.
 
 The camera matrix reads:
 <p align="center">
@@ -23,7 +23,7 @@ The camera matrix reads:
  
 where f<sub>x</sub>, f<sub>y</sub> are focal lengths of the camera and c<sub>x</sub>, c<sub>y</sub> are the pixel coordinates of the optical center.
 
-The distortion coefficients depend on the model. Currently we have implemented only simple distortion coefficients k<sub>1</sub>, k<sub>2</sub>, k<sub>3</sub> from <a href="https://docs.opencv.org/3.4.3/dc/dbb/tutorial_py_calibration.html">OpenCV docs</a>. 
+The distortion coefficients depend on the model. Currently we have implemented only simple radial distortion coefficients k<sub>1</sub>, k<sub>2</sub>, k<sub>3</sub> from <a href="https://docs.opencv.org/3.4.3/dc/dbb/tutorial_py_calibration.html">OpenCV docs</a>. 
 
 The world coordinates (x<sub>1</sub>,x<sub>2</sub>,x<sub>3</sub>) in the camera coordinate system are related to the pixel coordinates  (&xi;<sub>1</sub>,&xi;<sub>2</sub>,1) via the camera matrix as follows:
 
@@ -40,17 +40,17 @@ The inverse of this relation looks as follows:
 
 ### Minimization
 
-Let c<sup>i</sup><sub>&alpha;</sub> be the coordinates of a pattern in its own coordinate system. Here and further the latin index i runs from 1 to N, where N is the number of points in the calibration pattern. greek indices &alpha;&beta;... run from 1 to 3. 
+Let c<sup>i</sup><sub>&alpha;</sub> be the coordinates of a calibration pattern in its own coordinate system. Here and further the latin index i runs from 1 to N, where N is the number of points in the calibration pattern. Greek indices &alpha;,&beta;... run from 1 to 3. Note that we do not assume anything about the structure of the calibration pattern.
 
-Now, let &xi;<sup>i</sup><sub>&alpha;</sub> be the pixel coordinate of the corresponding pattern point on the image.
+Now, let &xi;<sup>i</sup><sub>&alpha;</sub> be the pixel coordinates of the ith pattern point on the image.
 
-Assuming the camera intrinsic parameters are known we can find a rotation matrix R and a translation vector T which , together with the scale parameters s<sup>i</sup>,  minimize the following error:
+Assuming the camera intrinsic parameters are known we can find a rotation matrix R and a translation vector T which, together with the scale parameters s<sup>i</sup>,  minimize the following error:
 
 <p align="center">
 <img src="https://latex.codecogs.com/gif.latex?E%20%3D%20%5Csum%5Climits_%7Bi%3D1%7D%5EN%5Csum_%7B%5Calpha%3D1%7D%5E3%5Cleft%28x%5Ei%20-%20%5Chat%7BR%7Dc%5Ei%20%2B%20T%20%5Cright%29%5E2%5Cequiv%20%5Csum%5Climits_%7Bi%3D1%7D%5EN%5Csum_%7B%5Calpha%3D1%7D%5E3%5Cleft%28u%5Ei_%5Calpha%20s%5Ei%20-%20%5Chat%7BR%7Dc%5Ei_%5Calpha%20%2B%20T_%5Calpha%20%5Cright%29%5E2"/>
 </p>
 
-The quantities *u* are defined in (1). We equipped the variables from the previous section with additional index i, which enumerates the points on the calibration pattern.
+The quantities *u* are defined in (1). We equipped the variables from the previous section with additional index i, which indicates the number of the point in the calibration pattern.
 
 Indeed, sequientially taking the derrivatives of *E* by *s<sup>i</sup>*, *T*, and *R* and equaling them to zero we obtain the following expressions for (1):
 <p align="center">
@@ -58,8 +58,16 @@ Indeed, sequientially taking the derrivatives of *E* by *s<sup>i</sup>*, *T*, an
 </p>
 
 Here we defined the following auxilliary quantities:
+
+The projector alogn &xi;<sup>i</sup>
 <p align="center">
-<img src="https://latex.codecogs.com/gif.latex?%5COmega%5Ei_%7B%5Calpha%5Cbeta%7D%3D%5Cdelta_%7B%5Calpha%5Cbeta%7D%20-%20%5Cfrac%7Bu%5Ei_%5Calpha%20u%5Ei_%5Cbeta%7D%7B%28u%5Eiu%5Ei%29%7D"/>,  <img src="https://latex.codecogs.com/gif.latex?A%5Ei%3D%5COmega%5Ei%20R%20c%5Ei"/>, 
+<img src="https://latex.codecogs.com/gif.latex?%5COmega%5Ei_%7B%5Calpha%5Cbeta%7D%3D%5Cdelta_%7B%5Calpha%5Cbeta%7D%20-%20%5Cfrac%7Bu%5Ei_%5Calpha%20u%5Ei_%5Cbeta%7D%7B%28u%5Eiu%5Ei%29%7D"/>,  
+</p>
+
+The projection of the rotated vector c<sup>i</sup> on the line &xi;<sup>i</sup>
+
+<p align="center">
+<img src="https://latex.codecogs.com/gif.latex?A%5Ei%3D%5COmega%5Ei%20R%20c%5Ei"/>, 
 </p>
 
 <p align="center">
