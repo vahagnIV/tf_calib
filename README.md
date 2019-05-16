@@ -110,7 +110,8 @@ To summarize, the algorithm for determining the parameters *K* is the following:
 
 1. Initialize K
 2. For each image 
-   1. Solve the equation (4) subject to R<sup>T</sup>R = I
+   1. Solve the equation (4) with respectto R subject to R<sup>T</sup>R = I
    2. Apply gradients descent to parameters *K* with loss function (2)
 
+Note that the parameters *K* are hidden in the vectors *u*.
 
