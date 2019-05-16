@@ -38,6 +38,8 @@ The inverse of this relation looks as follows:
 <img src="https://latex.codecogs.com/gif.latex?x_%5Calpha%20%3D%20%5Csum%5Climits_%7B%5Cbeta%3D1%7D%5E3K%5E%7B-1%7D_%7B%5Calpha%5Cbeta%7D%5Cxi_%5Cbeta%20s%20%5Cequiv%20%20su_%5Calpha%2C%5Cquad%20%5Calpha%3D1%2C2%2C3"/>       (1)
 </p>
 
+The vectors u<sup>i</sup> define the ray corresponding to the i-th point.
+
 ### Minimization
 
 Let c<sup>i</sup><sub>&alpha;</sub> be the coordinates of a calibration pattern in its own coordinate system. Here and further the latin index i runs from 1 to N, where N is the number of points in the calibration pattern. Greek indices &alpha;,&beta;... run from 1 to 3. Note that we do not assume anything about the structure of the calibration pattern.
