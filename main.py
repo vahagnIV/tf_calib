@@ -1,7 +1,7 @@
-import cv2
 import os
 import glob
 from calibrator import Calibrator
+import cv2
 import numpy as np
 
 try:
