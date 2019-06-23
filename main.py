@@ -26,7 +26,7 @@ def calibrate(path: str, filter: str, nrows: int, ncols: int):
             cv2.cornerSubPix(image, corners, (11, 11), (-1, -1),
                              (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001))
             print(counter)
-            calibrator.train(objp, np.squeeze(corners.astype(np.float64)))
+            calibrator.train(objp, [np.squeeze(corners.astype(np.float64))])
             # if counter == 300:
             #     for camera in calibrator.cameras:
             #         print(camera.get_intrinsic_matrix(calibrator.session))

@@ -4,11 +4,13 @@ from utils import create_rotation_matrix
 from distortion import IDistortion
 from scipy.optimize import newton_krylov
 from scipy.optimize.nonlin import NoConvergence
+import threading
 
+CAMERA_PARAMETER_NORMALIZATION_CONSTANT = 1000
 
 class Camera:
     def __init__(self, distortion: IDistortion = IDistortion()):
-        CAMERA_PARAMETER_NORMALIZATION_CONSTANT = 1000
+        print("Camera Initializing")
 
         self.angles = tf.placeholder(tf.float64, (3, None))
         self.R = create_rotation_matrix(self.angles)
@@ -163,6 +165,7 @@ class Camera:
         return session.run([self.K])[0]
 
     def train(self, xi: np.ndarray, c: np.ndarray, session: tf.Session):
+
         angles = self.find_best_rotation_parameters(xi, c, session)
         if angles is None:
             return None
@@ -171,3 +174,5 @@ class Camera:
                         feed_dict={self.xi_input: xi, self.c: c, self.angles: angles})
 
         return b[-1]
+    def __del__(self):
+        print("Camera Disposed")
