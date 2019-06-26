@@ -23,5 +23,10 @@ class Radial(IDistortion):
         return [tf.train.AdamOptimizer(1e-2).minimize(loss,
                                                       var_list=[self.k1, self.k2, self.k3])]
 
-    def get_variables(self, session):
+    def get_coefficients(self, session):
         return session.run([self.k1, self.k2, self.k3])
+
+    def set_coefficients(self, session: tf.Session, coefficients ):
+        session.run(self.k1.assign(coefficients[0]))
+        session.run(self.k2.assign(coefficients[1]))
+        session.run(self.k3.assign(coefficients[2]))

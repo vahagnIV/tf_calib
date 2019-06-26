@@ -8,6 +8,7 @@ import threading
 
 CAMERA_PARAMETER_NORMALIZATION_CONSTANT = 1000
 
+
 class Camera:
     def __init__(self, distortion: IDistortion = IDistortion()):
         print("Camera Initializing")
@@ -20,8 +21,8 @@ class Camera:
         # We use normalized parameters  fx_real / 1000
         self.f_x = tf.Variable(1.52137, dtype=tf.float64)
         self.f_y = tf.Variable(1.5195, dtype=tf.float64)
-        self.c_x = tf.Variable(0.6984, dtype=tf.float64)
-        self.c_y = tf.Variable(0.442494, dtype=tf.float64)
+        self.c_x = tf.Variable(0.320, dtype=tf.float64)
+        self.c_y = tf.Variable(0.242494, dtype=tf.float64)
 
         self.distortion = distortion
         self.xi = self.distortion.apply(self.xi_input, self.c_x * CAMERA_PARAMETER_NORMALIZATION_CONSTANT,
@@ -126,7 +127,7 @@ class Camera:
         return s, x, RcpT
 
     def _find_rotation_matrix_guess(self, xi: np.ndarray, c: np.ndarray, session: tf.Session):
-        N = 30
+        N = 40
 
         intervals = np.array([[-np.pi, np.pi], [-np.pi, np.pi], [-np.pi, np.pi]], dtype=np.float64)
         grid1 = np.linspace(intervals[0, 0], intervals[0, 1], N)
@@ -164,6 +165,12 @@ class Camera:
     def get_intrinsic_matrix(self, session: tf.Session):
         return session.run([self.K])[0]
 
+    def set_intrinsic_matrix(self, session: tf.Session, matrix: np.ndarray):
+        session.run(self.f_x.assign(matrix[0, 0] / CAMERA_PARAMETER_NORMALIZATION_CONSTANT))
+        session.run(self.f_y.assign(matrix[1, 1] / CAMERA_PARAMETER_NORMALIZATION_CONSTANT))
+        session.run(self.c_x.assign(matrix[0, 2] / CAMERA_PARAMETER_NORMALIZATION_CONSTANT))
+        session.run(self.c_x.assign(matrix[1, 2] / CAMERA_PARAMETER_NORMALIZATION_CONSTANT))
+
     def train(self, xi: np.ndarray, c: np.ndarray, session: tf.Session):
 
         angles = self.find_best_rotation_parameters(xi, c, session)
@@ -174,5 +181,6 @@ class Camera:
                         feed_dict={self.xi_input: xi, self.c: c, self.angles: angles})
 
         return b[-1]
+
     def __del__(self):
         print("Camera Disposed")

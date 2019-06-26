@@ -33,11 +33,14 @@ class Calibrator:
             metrics.append([camera.train(xi[index], c, self.session)])
         return (metrics, None)
 
-    def get_intristics(self):
-        return [cam.get_intrinsic_matrix(self.session) for cam in self.cameras]
+    def get_intrinsics(self):
+        return [(cam.get_intrinsic_matrix(self.session), cam.distortion.get_coefficients(self.session)) for cam in self.cameras]
 
-    def set_intristics(self, m):
-        print(m)
+    def set_intrinsics(self, intrinsics):
+        print(intrinsics)
+        for cam, params in zip(self.cameras, intrinsics):
+            cam.set_intrinsic_matrix(self.session, params[0])
+            cam.distortion.set_coefficients(self.session, params[1])
 
     def __del__(self):
         if hasattr(self, 'session'):
