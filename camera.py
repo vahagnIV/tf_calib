@@ -62,7 +62,7 @@ class Camera:
         loss = tf.reduce_sum(self.loss)
         self.optimizers = [
                               tf.train.AdamOptimizer(5e-2).minimize(loss, var_list=[self.f_x, self.f_y]),
-                              tf.train.AdamOptimizer(1e-1).minimize(loss, var_list=[self.c_x, self.c_y])
+                              tf.train.AdamOptimizer(1e-2).minimize(loss, var_list=[self.c_x, self.c_y])
                           ] + self.distortion.get_optimizers(loss)
 
     def _init_u(self, xi):
@@ -169,7 +169,7 @@ class Camera:
         session.run(self.f_x.assign(matrix[0, 0] / CAMERA_PARAMETER_NORMALIZATION_CONSTANT))
         session.run(self.f_y.assign(matrix[1, 1] / CAMERA_PARAMETER_NORMALIZATION_CONSTANT))
         session.run(self.c_x.assign(matrix[0, 2] / CAMERA_PARAMETER_NORMALIZATION_CONSTANT))
-        session.run(self.c_x.assign(matrix[1, 2] / CAMERA_PARAMETER_NORMALIZATION_CONSTANT))
+        session.run(self.c_y.assign(matrix[1, 2] / CAMERA_PARAMETER_NORMALIZATION_CONSTANT))
 
     def train(self, xi: np.ndarray, c: np.ndarray, session: tf.Session):
 
