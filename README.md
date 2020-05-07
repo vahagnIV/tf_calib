@@ -103,7 +103,7 @@ The rotation matrix is determined from the following equation:
 where the matrix M reads:
 
 <p align="center">
-<img src="docs/images/img11.svg"/>  
+<img src="docs/images/img12.svg"/>  
 </p>
 
 To summarize, the algorithm for determining the parameters *K* is the following:
